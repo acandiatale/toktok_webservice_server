@@ -16,33 +16,8 @@ import org.slf4j.LoggerFactory;
 public class Bootstrap {
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger(Bootstrap.class);
-		Server server = new Server();
-
-		
-		logger.info("server initiate");
-		ServerConnector http = new ServerConnector(server);
-		String localhost = "";
-		
-		try {
-			InetAddress local = InetAddress.getLocalHost();
-			localhost = local.getHostAddress();
-			System.out.println(localhost);
-		} catch (UnknownHostException e) {
-			logger.info("Fail to get LocalHost");
-			e.printStackTrace();
-		}
-		
-		if (!localhost.isEmpty()) {
-			http.setHost(localhost);
-			http.setPort(15732);
-			http.setIdleTimeout(30000);
-		} else {
-			logger.error("LocalHost is empty");
-			logger.error("server shutdown");
-			System.exit(1);
-		}
-		
-		server.addConnector(http);
+		ServerFactory serverFactory = new ServerFactory();
+		Server server = serverFactory.create();
 		
 		ResourceHandler rsHandler = new ResourceHandler();
 		File file = new File("");
