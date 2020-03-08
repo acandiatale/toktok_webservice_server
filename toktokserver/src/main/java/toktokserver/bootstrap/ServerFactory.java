@@ -1,7 +1,9 @@
 package toktokserver.bootstrap;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
@@ -14,9 +16,10 @@ public class ServerFactory {
 	public Server create() {
 		Server server = new Server();
 		ServerConnector http = new ServerConnector(server);
-		if(checkIp(getLocalHost())) {
+		getHostAddress();
+		if(checkIp(localhost)) {
 			http.setHost(localhost);
-			http.setPort(15732);
+			http.setPort(12731);
 			http.setIdleTimeout(30000);
 		}
 		
@@ -25,16 +28,27 @@ public class ServerFactory {
 		return server;
 	}
 	
-	private String getLocalHost() {
+	private void getHostAddress() {
 		try {
-			InetAddress local = InetAddress.getLocalHost();
-			localhost = local.getHostAddress();
-			System.out.println(localhost);
-		} catch (UnknownHostException e) {
-			logger.info("Fail to get LocalHost");
+			Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+			while(networkInterfaces.hasMoreElements()) {
+				NetworkInterface networkInterface = networkInterfaces.nextElement();
+				String name = networkInterface.getName();
+				String displayName = networkInterface.getDisplayName();
+				if(!networkInterface.isLoopback()) {
+					Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+					while(inetAddresses.hasMoreElements()) {
+						InetAddress inetAddress = inetAddresses.nextElement();
+						if(!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress()) {
+							localhost = inetAddress.getHostAddress();
+							System.out.println(localhost);
+						}
+					}
+				}
+			}
+		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-		return localhost;
 	}
 	
 	private boolean checkIp(String localhost) {
