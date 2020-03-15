@@ -16,12 +16,15 @@ public class ServerFactory {
 	public Server create() {
 		Server server = new Server();
 		ServerConnector http = new ServerConnector(server);
-		getHostAddress();
-		if(checkIp(localhost)) {
-			http.setHost(localhost);
-			http.setPort(12731);
-			http.setIdleTimeout(30000);
-		}
+//		getHostAddress();
+//		if(checkIp(localhost)) {
+//			http.setHost(localhost);
+//			http.setPort(12731);
+//			http.setIdleTimeout(30000);
+//		}
+		http.setHost("localhost");
+		http.setPort(12731);
+		http.setIdleTimeout(30000);
 		
 		server.addConnector(http);
 		

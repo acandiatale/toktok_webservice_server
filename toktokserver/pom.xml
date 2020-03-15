@@ -59,12 +59,14 @@
 	</build>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty.aggregate/jetty-all -->
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.4.26.v20200117</version>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-all</artifactId>
+			<version>9.4.27.v20200227</version>
+			<type>pom</type>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
