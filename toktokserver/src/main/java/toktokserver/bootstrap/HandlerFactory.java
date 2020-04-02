@@ -36,25 +36,32 @@ public class HandlerFactory {
 		rsHandler.setWelcomeFiles(new String[] {"index.html"});
 		rsHandler.setBaseResource(pathResource);
 		
-		ServletContextHandler context = new ServletContextHandler();
+		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		
-		ServletHandler servletHandler = new ServletHandler();
-		servletHandler.addServletWithMapping(DoWorkServlet.class, "/do");
+		context.addServlet(DoWorkServlet.class, "/do");
 		
-		FilterHolder cors = new FilterHolder(CrossOriginFilter.class);
-		cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-		cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
-		cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "OPTIONS,GET,POST,HEAD");
-		cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
-		cors.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM, "false");
-		cors.setName("cross-origin");
-		FilterMapping fm = new FilterMapping();
-		fm.setFilterName("cross-origin");
-		fm.setPathSpec("*");
-		servletHandler.addFilter(cors, fm);
+		
+//		
+//		ServletHandler servletHandler = new ServletHandler();
+//		servletHandler.addServletWithMapping(DoWorkServlet.class, "/do");
+//		
+//		FilterHolder cors = new FilterHolder(CrossOriginFilter.class);
+//		cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+//		cors.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+//		cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "OPTIONS,GET,POST,HEAD");
+//		cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,Accept,Origin");
+//		cors.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM, "false");
+//		cors.setName("cross-origin");
+//		FilterMapping fm = new FilterMapping();
+//		fm.setFilterName("cross-origin");
+//		fm.setPathSpec("*");
+//		servletHandler.addFilter(cors, fm);
+//		
 		
 		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new org.eclipse.jetty.server.Handler[] {rsHandler, servletHandler});
+		
+		
+		handlers.setHandlers(new org.eclipse.jetty.server.Handler[] {rsHandler, context});
 		return handlers;
 	}
 	

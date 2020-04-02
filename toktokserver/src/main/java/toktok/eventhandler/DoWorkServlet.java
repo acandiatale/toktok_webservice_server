@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@MultipartConfig
 public class DoWorkServlet extends HttpServlet{
 	private String param;
 	private String[] values;
@@ -17,15 +19,18 @@ public class DoWorkServlet extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		param = req.getParameter("id");
-		values = req.getParameterValues("id");
-		System.out.println("param: " + param + ", values" + values.toString());
-		valueList = new ArrayList<String>(Arrays.asList(values));
 		
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		param = req.getParameter("user_id");
+		System.out.println(param);
 //		resp.addHeader("Access-Control-Allow-Origin", "*");
 //		resp.addHeader("Access-Control-Allow-Credentials", "true");
 //		resp.addHeader("Access-Control-Allow-Methods", "X-Requested-With,Content-Type,Accept,Origin");
 		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.getWriter().write("뿌엥");
 	}
 
 }
