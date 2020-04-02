@@ -1,12 +1,10 @@
 package toktok.eventhandler;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +26,6 @@ public class DoWorkServlet extends HttpServlet{
 //		resp.addHeader("Access-Control-Allow-Credentials", "true");
 //		resp.addHeader("Access-Control-Allow-Methods", "X-Requested-With,Content-Type,Accept,Origin");
 		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.setHeader("name", "kim");
 	}
 
 }
