@@ -8,14 +8,14 @@ import java.net.URL;
 
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
+import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.util.resource.PathResource;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.LoggerFactory;
 
@@ -34,45 +34,50 @@ public class HandlerFactory {
 			logger.error("resourceFile is empty(or can't find it)");
 			System.exit(10);
 		}
-		URL url = this.getClass().getResource("dist/");
+		RewriteHandler rewrite = new RewriteHandler();
+		rewrite.setRewriteRequestURI(true);
+		rewrite.setRewritePathInfo(false);
+		rewrite.setOriginalPathAttribute("requestedPath");
+		
+		RewriteRegexRule rule = new RewriteRegexRule();
+		rule.setRegex("\\/main|\\/introduction|\\/introduction02|\\/introduction03|\\/introduction04|\\/introduction05");
+		rule.setReplacement("/index.html");
+		
+//		RewritePatternRule rule = new RewritePatternRule();
+//		rule.setPattern("/main");
+//		rule.setReplacement("/index.html");
+		rewrite.addRule(rule);
+		
+		
+		
+		URL url = this.getClass().getResource("/dist/index.html");
 		System.out.println(url);
 		URI uri = null;
-		try {
-			uri = URI.create(url.toURI().toASCIIString().replaceFirst("/index.html$", "/"));
-			System.out.println(uri.toString());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+		uri = URI.create(resourceFile.toURI().toASCIIString().replaceFirst("/index.html$", "/"));
+//			uri = URI.create(url.toURI().toASCIIString().replaceFirst("/index.html$", "/"));
+		System.out.println(uri.toString());
+		
 		ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-			
+		
+		handler.setContextPath("/");
+		handler.setWelcomeFiles(new String[] {"index.html"});
 		try {
-			handler.setContextPath("/");
 			handler.setBaseResource(Resource.newResource(uri));
-			handler.setWelcomeFiles(new String[] {"index.html"});
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+	
+//		System.out.println(resourceFile.getAbsolutePath());
+//		
 //		PathResource pathResource = new PathResource(resourceFile);
 //		ResourceHandler rsHandler = new ResourceHandler();
 //		rsHandler.setDirectoriesListed(false);
 //		rsHandler.setWelcomeFiles(new String[] {"index.html"});
 //		rsHandler.setBaseResource(pathResource);
 		
-		RewriteHandler rewrite = new RewriteHandler();
-		rewrite.setRewriteRequestURI(true);
-		rewrite.setRewritePathInfo(false);
-		rewrite.setOriginalPathAttribute("requestedPath");
-		
-		RewritePatternRule rule = new RewritePatternRule();
-		rule.setPattern("/main");
-		rule.setReplacement("/index.html");
-		
-		rewrite.addRule(rule);
 		rewrite.setHandler(handler);
 		
+		handler.addServlet(DefaultServlet.class, "/");
 		
 		ServletHandler servletHandler = new ServletHandler();
 		servletHandler.addServletWithMapping(DoWorkServlet.class, "/do");
@@ -94,7 +99,7 @@ public class HandlerFactory {
 		HandlerList handlers = new HandlerList();
 		
 		
-		handlers.setHandlers(new org.eclipse.jetty.server.Handler[] {handler, rewrite, servletHandler});
+		handlers.setHandlers(new org.eclipse.jetty.server.Handler[] {rewrite, servletHandler});
 		return handlers;
 	}
 	
